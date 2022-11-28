@@ -1,20 +1,21 @@
 <template>
   <div id="app" :class="typeof weather.main != 'undefined' && weather.main.temp > 16 ? 'warm' : ''">
-    <main>
-      <div class="search-box">
-        <input type="text" class="search-bar" placeholder="Wyszukaj..."
-        v-model="query" @keypress="fetchWeather"
-        />
-      </div> 
-      <div class="weather-wrap" v-if="typeof weather.main!='undefined'">
+    <main :class="typeof weather.main != 'undefined' && weather.main.temp > 16 ? 'warm' : ''">
+      <div class="hero-shadow">
+      </div>
+      <div class=" search-box">
+        <input type="text" class="search-bar" placeholder="Wyszukaj..." v-model="query" @keypress="fetchWeather" />
+      </div>
+      <div class="weather-wrap" v-if="typeof weather.main != 'undefined'">
         <div class="location-box">
           <div class="location">
-            {{weather.name}},{{weather.sys.country}}
+            {{ weather.name }},{{ weather.sys.country }}
+            {{ getTime(weather.timezone) }}
           </div>
-          <div class="date">{{dateBuilder()}}</div>
+          <div class="date">{{ dateBuilder() }}</div>
           <div class="weather-box">
-            <div class="temp">{{Math.round(weather.main.temp)}}°c</div>
-            <div class="weather">{{weather.weather[0].description}}</div>
+            <div class="temp">{{ Math.round(weather.main.temp) }}°c</div>
+            <div class="weather">{{ weather.weather[0].description }}</div>
           </div>
         </div>
       </div>
@@ -23,30 +24,29 @@
 </template>
 <script>
 
-export default{
+export default {
   name: 'app',
-  data (){
+  data() {
     return {
-      api_key:'c6d626d37147d75dc24ec0a54e865843',
-      url_base:'http://api.openweathermap.org/data/2.5/',
-      query:'',
-      weather:{}
+      api_key: 'c6d626d37147d75dc24ec0a54e865843',
+      url_base: 'http://api.openweathermap.org/data/2.5/',
+      query: '',
+      weather: {}
 
     }
   },
-  methods:{
-    fetchWeather(e){
-      if(e.key=="Enter")
-      {
-        fetch(`${this.url_base}weather?q=${this.query}&units=metric&lang=pl&APPID=${this.api_key}`).then(res=>{
+  methods: {
+    fetchWeather(e) {
+      if (e.key == "Enter") {
+        fetch(`${this.url_base}weather?q=${this.query}&units=metric&lang=pl&APPID=${this.api_key}`).then(res => {
           return res.json()
         }).then(this.setResults)
       }
     },
-    setResults(results){
-      this.weather=results
+    setResults(results) {
+      this.weather = results
     },
-    dateBuilder () {
+    dateBuilder() {
       let d = new Date();
       let months = ["Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec", "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"];
       let days = ["Niedziela", "Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota"];
@@ -55,6 +55,14 @@ export default{
       let month = months[d.getMonth()];
       let year = d.getFullYear();
       return `${day} ${date} ${month} ${year}`;
+    },
+    getTime(timezone) {
+      const localTime = new Date().getTime()
+      const localOffset = new Date().getTimezoneOffset() * 60000
+      const currentUtcTime = localOffset + localTime
+      const cityOffset = currentUtcTime + 1000 * timezone
+      const cityTime = new Date(cityOffset).toTimeString().split(' ')
+      return cityTime[0]
     }
   }
 }
@@ -65,87 +73,124 @@ export default{
   padding: 0;
   box-sizing: border-box;
 }
+
 body {
   font-family: 'montserrat', sans-serif;
 }
+
 #app {
   background-color: #313131;
-
   background-image: url('./assets/cold-bg.jpg');
-  background-size:cover;
-  
+  background-size: cover;
   background-position: center;
+
+
 }
-main {
-  min-height: 100vh;
+
+.hero-shadow {
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: -1;
+  width: 100%;
   padding: 25px;
   background-image: linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.75));
+  transform: translateX(-50%)
 }
-.search-box
-{
+
+main {
+  filter: blur(-8px);
+  position: relative;
+  min-height: 100vh;
+  margin: 0 auto;
+  width: 50%;
+  z-index: 0;
+  padding: 25px;
+  background-image: url('./assets/cold-bg.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+main.warm {
+  background-image: url('./assets/warm.jpg');
+
+}
+
+.search-box {
+  z-index: 5;
   width: 60%;
-  margin:0 auto;
+  margin: 0 auto;
   margin-bottom: 30px;
 }
-#app .temp{
-  color:aqua;
+
+#app .temp {
+  color: aqua;
 }
+
 #app.warm {
   background-image: url('./assets/warm.jpg');
 }
-#app.warm .temp{
-  color:rgb(255, 0, 0)
+
+#app.warm .temp {
+  color: rgb(255, 0, 0)
 }
-.search-box .search-bar
-{
+
+.search-box .search-bar {
   display: block;
   width: 100%;
   padding: 15px;
-  color:#313131;
-  font-size:20px;
+  color: #313131;
+  font-size: 20px;
   font-weight: 600;
   appearance: none;
-  border:none;
-  outline:none;
+  border: none;
+  outline: none;
   background: none;
-  background-color: rgba(255,255,255,0.75);
-  border-radius:16px;
-  transition:0.4s;
+  background-color: rgba(255, 255, 255, 0.75);
+  border-radius: 16px;
+  transition: 0.4s;
 }
-.search-box .search-bar:focus{
-  background-color: rgba(255,255,255,0.75);
-  border-radius:16px;
-  box-shadow: 0px 0px 16px rgba(255,255,255,0.5);
+
+.search-box .search-bar:focus {
+  background-color: rgba(255, 255, 255, 0.75);
+  border-radius: 16px;
+  box-shadow: 0px 0px 16px rgba(255, 255, 255, 0.5);
 }
-.location-box .location{
-  color:white;
+
+.location-box .location {
+  color: white;
   font-size: 32px;
   font-weight: 500;
   text-align: center;
-  text-shadow:1px 3px rgba(0, 0, 0, 0.25);
+  text-shadow: 1px 3px rgba(0, 0, 0, 0.25);
 }
-.location-box .date{
-  color:white;
+
+.location-box .date {
+  color: white;
   font-size: 20px;
   font-weight: 300;
-  font-style:italic;
+  font-style: italic;
   text-align: center;
 }
-.weather-box{
+
+.weather-box {
   text-align: center;
 }
-.weather-box .temp{
-  display:inline-block;
-  color:white;
+
+.weather-box .temp {
+  display: inline-block;
+  color: white;
   font-size: 102px;
   font-weight: 900;
-  text-shadow: 3px 6px rgba(0, 0, 0, 0.25); 
+  text-shadow: 3px 6px rgba(0, 0, 0, 0.25);
 }
-.weather-box .weather{
-  color:white;
+
+.weather-box .weather {
+  color: white;
   font-size: 50px;
   font-weight: 900;
-  font-style:italic;
-text-transform: capitalize;
+  font-style: italic;
+  text-transform: capitalize;
 }
 </style>
