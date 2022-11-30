@@ -1,45 +1,16 @@
 <template>
   <div id="app">
     <main
-      :class="
-        typeof weather.main != 'undefined' &&
-        (weather.weather[0].main == 'Clouds'
-          ? 'clouds'
-          : '' || weather.weather[0].main == 'Thunderstorm'
-          ? 'thunderstorm'
-          : '' || weather.weather[0].main == 'Drizzle'
-          ? 'drizzle'
-          : '' || weather.weather[0].main == 'Mist'||weather.weather[0].main == 'Haze'||weather.weather[0].main == 'Fog'
-          ? 'mist'
-          : '' || weather.weather[0].main == 'Rain'
-          ? 'rain'
-          : '' || weather.weather[0].main == 'Smoke'
-          ? 'smoke'
-          : '' || weather.weather[0].main == 'Snow'
-          ? 'snow'
-          : '' || weather.weather[0].main == 'Dust'|| weather.weather[0].main == 'Sand'
-          ? 'dust'
-          : '' || weather.weather[0].main == 'Ash'
-          ? 'ash'
-          : '' || weather.weather[0].main == 'Squall'
-          ? 'squall'
-          : '' || weather.weather[0].main == 'Tornado'
-          ? 'tornado'
-          : '')
-      "
-    >
-      <div class="blurred-img"></div>
+      :style="
+      typeof weather.main != 'undefined' ? { backgroundImage: `url(src/assets/${weather.weather[0].main}.jpg)` } : { backgroundImage: `url(src/assets/clear.jpg)` }">
+      <div class="hehe" v-if="query == 'Night City'"></div>
+
+      <div class=" blurred-img">
+      </div>
       <div class="hero-img">
         <div class="hero-shadow"></div>
-
         <div class="search-box">
-          <input
-            type="text"
-            class="search-bar"
-            placeholder="Wyszukaj..."
-            v-model="query"
-            @keypress="fetchWeather"
-          />
+          <input type="text" class="search-bar" placeholder="Wyszukaj..." v-model="query" @keypress="fetchWeather" />
         </div>
         <div class="weather-wrap" v-if="typeof weather.main != 'undefined'">
           <div class="location-box">
@@ -55,11 +26,14 @@
           </div>
         </div>
       </div>
+
     </main>
   </div>
+
 </template>
 <script>
 export default {
+
   name: "app",
   data() {
     return {
@@ -67,6 +41,9 @@ export default {
       url_base: "http://api.openweathermap.org/data/2.5/",
       query: "",
       weather: {},
+      // styles: {
+      //   Image: `src/assets/${weather.weather[0].main}.jpg`
+      // }
     };
   },
   methods: {
@@ -127,63 +104,33 @@ export default {
 };
 </script>
 <style scoped>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  
+main {
+  position: relative;
+  height: 100vh;
+
+}
+
+.hehe {
+  z-index: 999;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: url("src/assets/cyberpunk.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+
 }
 
 
-main,main.clear {
-  
-  background-image: url("./assets/clear.jpg");
-}
-
-main.clouds {
-  background-image: url("./assets/clouds.jpg");
-}
-main.ash{
-  background-image: url('./assets/ash.jpg');
-}
-main.drizzle{
-  background-image: url('./assets/drizzle.jpg');
-}
-main.dust{
-  background-image: url('./assets/dust.jpg');
-}
-main.mist{
-  background-image: url('./assets/mist.jpg');
-}
-main.rain{
-  background-image: url('./assets/rain.jpg');
-}
-main.rain{
-  background-image: url('./assets/smoke.jpg');
-}
-main.smoke{
-  background-image: url('./assets/smoke.jpg');
-}
-main.snow{
-  background-image: url('./assets/snow.jpg');
-}
-main.squall{
-  background-image: url('./assets/squall.jpg');
-}
-main.thunderstorm{
-  background-image: url('./assets/thunderstorm.jpg');
-}
-main.tornado{
-  background-image: url('./assets/tornado.jpg');
-}
 .blurred-img {
   position: absolute;
   width: 100%;
-  background-image: inherit;
   height: 100%;
+  background-image: inherit;
   background-repeat: no-repeat;
   background-size: cover;
-  overflow: hidden;
+  filter: blur(8px);
+  scale: 1.1;
 }
 
 .hero-shadow {
@@ -191,7 +138,6 @@ main.tornado{
   position: absolute;
   top: 0;
   border-radius: 30px;
-  
   left: 50%;
   z-index: -1;
   width: 100%;
@@ -199,12 +145,13 @@ main.tornado{
   background-image: linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.75));
   transform: translateX(-50%);
 }
+
 .hero-img {
   position: relative;
   margin: 0 auto;
   top: 100px;
   height: 600px;
-  width: 500px;
+  max-width: 500px;
   z-index: 0;
   border-radius: 30px;
   padding: 25px;
@@ -212,7 +159,7 @@ main.tornado{
   background-size: cover;
   background-position: center;
   box-shadow: 0px 0px 30px 10px rgba(0, 0, 0, 0.8);
-  
+
 }
 
 .search-box {
