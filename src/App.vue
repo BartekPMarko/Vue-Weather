@@ -2,16 +2,25 @@
   <div id="app">
     <main
       :style="
-      typeof weather.main != 'undefined' ? { backgroundImage: `url(src/assets/${weather.weather[0].main}.jpg)` } : { backgroundImage: `url(src/assets/clear.jpg)` }">
-      <div class="hehe" v-if="query == 'Night City'"></div>
-
-      <div class=" blurred-img">
-      </div>
+        typeof weather.main != 'undefined'
+          ? {
+              backgroundImage: `url(src/assets/${weather.weather[0].main}.jpg)`,
+            }
+          : { backgroundImage: `url(src/assets/clear.jpg)` }
+      "
+    >
+      <div class="blurred-img"></div>
       <div class="hero-img">
         <div class="hero-shadow"></div>
 
         <div class="search-box">
-          <input type="text" class="search-bar" placeholder="Wyszukaj..." v-model="query" @keypress="fetchWeather" />
+          <input
+            type="text"
+            class="search-bar"
+            placeholder="Wyszukaj..."
+            v-model="query"
+            @keypress="fetchWeather"
+          />
         </div>
         <div class="weather-wrap" v-if="typeof weather.main != 'undefined'">
           <div class="location-box">
@@ -23,22 +32,20 @@
             <div class="weather-box">
               <div class="temp">{{ Math.round(weather.main.temp) }}°c</div>
               <div class="weather">{{ weather.weather[0].description }}</div>
-              <div class="feels-like">Temperatura odczuwalna:
+              <div class="feels-like">
+                Temperatura odczuwalna:
                 <div>{{ Math.round(weather.main.feels_like) }}°c</div>
               </div>
             </div>
           </div>
         </div>
       </div>
-
     </main>
   </div>
-
 </template>
 <script>
-import './assets/styles/style.css'
+import "./assets/styles/style.css";
 export default {
-
   name: "app",
   data() {
     return {
@@ -103,8 +110,5 @@ export default {
       return cityTime[0];
     },
   },
-
 };
-
-
 </script>
